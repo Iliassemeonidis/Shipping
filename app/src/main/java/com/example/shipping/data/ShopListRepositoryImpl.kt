@@ -5,17 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import com.example.shipping.domain.ShopItem
 import com.example.shipping.domain.ShopItem.Companion.UNDEFINDEN_ID
 import com.example.shipping.domain.ShopListRepository
+import java.util.Random
 
 object ShopListRepositoryImpl : ShopListRepository {
-    private val shopList = mutableListOf<ShopItem>()
-
     private var autoIncrementId = 0
 
     private val livaDT = MutableLiveData<List<ShopItem>>()
+    private val shopList = sortedSetOf<ShopItem>({ t, t2 -> t.id.compareTo(t2.id)  })
 
     init {
-        for (i in 0 until 10) {
-            val item = ShopItem("Mame $i", i, true)
+        for (i in 0 until 1000) {
+            val item = ShopItem("Mame $i", i, Random().nextBoolean())
             addShopItem(item)
         }
     }
@@ -34,7 +34,7 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun editShopList(shopItem: ShopItem) {
-        val oldShopItem = shopList[shopItem.id]
+        val oldShopItem = shopList.toList()[shopItem.id]
         shopList.remove(oldShopItem)
         addShopItem(shopItem)
     }
